@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vessel</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="src/svg-helper.js"></script>
+
+  <style>
+    .comp {
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div style="width: 100%; height: 800px; display: flex;">
+    <div id="leftPanel" style="width: 50%;">
+    </div>
+    <div id="rightPanel" style="flex: 1;">
+    </div>
+  </div>
+
+  <script>
+
+    var leftPanel = null;
+    var rightPanel = null;
+
+    var resultLeft = null;
+    var resultRight = null;
+
+    var currentCompId = '';
+
+    const loadLeftPanel = async (id, width, height) => {
+
+      if (resultLeft === null) {
+        resultLeft = await d3.json("/data/vessels.json")
+        console.log(resultLeft);
+      }
+
+      const { svg, scaleX, scaleY } = svgHelper.init({
+        id: id,
+        width: width,
+        height: height,
+        margin: {
+          top: 30,
+          right: 30,
+          bottom: 30,
+          left: 30
+        }
+      });
+
+      const comp = svg.selectAll('.comp')
+        .data(resultLeft)
+        .enter()
+        .append('g')
+        .attr('class', 'comp');
+
+      comp.append('polygon')
+        .attr('class', 'comp')
+        .attr("points", d => {
+          return d.Data.map(d => {
+            return [scaleX(d.x), scaleY(d.y)].join(",");
+          }).join(" ");
+        })
+        .on('click', function () {
+        })
+        .on('mouseenter', function () {
+          
+          currentCompId = d3.select(this).attr("id");
+          d3.select(this).style("fill", '#d4d4d4');
+          d3.select(this).style("stroke", '#d4d4d4');
+
+          const svg = rightPanel.svg;
+          const comps = svg.selectAll('polygon')._groups[0];
+          for (let i = 0; i < comps.length; i++) {
+            if (comps[i].id !== currentCompId) continue;
+            const comp = d3.select(comps[i]);
+            comp.style('fill', '#d4d4d4');
+            comp.style('stroke', '#d4d4d4');
+          }
+
+        })
+        .on('mouseleave', function () {
+          const color = d3.select(this).attr('color');
+          d3.select(this).style("fill", color);
+          d3.select(this).style("stroke", color);
+
+          const svg = rightPanel.svg;
+          const comps = svg.selectAll('polygon')._groups[0];
+          for (let i = 0; i < comps.length; i++) {
+            if (comps[i].id !== currentCompId) continue;
+            const comp = d3.select(comps[i]);
+            comp.style('fill', color);
+            comp.style('stroke', color);
+          }
+
+        })
+        .attr('id', x => x.Id)
+        .attr('color', x => x.Color)
+        .attr("fill", x => x.Color)
+        .attr("stroke", x => x.Color)
+        .attr("stroke-width", 1);
+
+      leftPanel = svg;
+
+    }
+    
+    const loadRightPanel = async (id, width, height) => {
+
+      if (resultRight === null) {
+        resultRight = await d3.json("/data/vessels.json")
+        console.log(resultRight);
+      }
+
+      rightPanel = svgHelper.init({
+        id: id,
+        width: width,
+        height: height,
+        margin: {
+          top: 30,
+          right: 30,
+          bottom: 30,
+          left: 30
+        }
+      });
+
+      loadRightPanelData(rightPanel);
+
+    }
+
+    const loadRightPanelData = props => {
+
+      console.log('loadRightPanelData');
+
+      const { svg, scaleX, scaleY } = props;
+
+      const comp = svg.selectAll('.comp')
+        .data(resultRight)
+        .enter()
+        .append('g')
+        .attr('class', 'comp');
+
+      comp.append('polygon')
+        .attr('class', 'comp')
+        .attr("points", d => {
+          return d.Data.map(d => {
+            return [scaleX(d.x), scaleY(d.y)].join(",");
+          }).join(" ");
+        })
+        .on('click', function () {
+        })
+        .on('mouseenter', function () {
+        })
+        .on('mouseleave', function () {
+        })
+        .attr('id', x => x.Id)
+        .attr("fill", x => x.Color)
+        .attr("stroke", x => x.Color)
+        .attr("stroke-width", 1);
+
+      comp.exit().remove();
+
+    }
+
+
+    loadLeftPanel('leftPanel', 500, 500);
+    loadRightPanel('rightPanel', 500, 500);
+
+  </script>
+
+  <!-- <script src="src/app.js"></script> -->
+</body>
+
+</html>
