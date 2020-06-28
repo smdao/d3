@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Vessel</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="/js/svg-helper.js"></script>
+  <script src="svg-helper.js"></script>
 
   <style>
     .comp {
@@ -44,7 +44,7 @@
     const loadLeftPanel = async (id, width, height) => {
 
       if (resultLeft === null) {
-        resultLeft = await d3.json("data/vessels.json")
+        resultLeft = await d3.json("../data/vessels.json")
         console.log(resultLeft);
       }
 
@@ -119,7 +119,7 @@
     const loadRightPanel = async (id, width, height) => {
 
       if (resultRight === null) {
-        resultRight = await d3.json("data/vessels.json")
+        resultRight = await d3.json("../data/vessels.json")
         console.log(resultRight);
       }
 
