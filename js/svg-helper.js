@@ -61,10 +61,6 @@ svgHelper.init = props => {
     .call(xGridLines)
     .call(g => g.select(".domain").remove());
 
-
-
-
-
   return {
     svg,
     scaleX,
