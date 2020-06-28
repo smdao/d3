@@ -23,21 +23,47 @@ svgHelper.init = props => {
     .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
   const scaleX = d3.scaleLinear()
+    .nice()
     .domain([0, 250])
-    .range([0, width])
-    .nice();
+    .range([0, width]);
 
   const scaleY = d3.scaleLinear()
+    .nice()
     .domain([0, 250])
-    .range([height, 0])
-    .nice();
+    .range([height, 0]);
 
   svg.append('g')
-    .call(d3.axisLeft(scaleY));
+    .call(d3.axisLeft(scaleY))
+
+  const yGridLines = d3.axisLeft(scaleY)
+    .ticks(10)
+    .tickFormat('')
+    .tickSize(-width);
+
+  const gridY = svg.append('g')
+    .attr('class', 'grid')
+    .attr('stroke', 'lightgray')
+    .call(yGridLines)
+    .call(g => g.select(".domain").remove());
 
   svg.append('g')
     .attr('transform', `translate(0, ${height})`)
     .call(d3.axisBottom(scaleX));
+
+  const xGridLines = d3.axisBottom(scaleX)
+    .ticks(10)
+    .tickFormat('')
+    .tickSize(height);
+
+  const gridX = svg.append('g')
+    .attr('class', 'grid')
+    .attr('stroke', 'lightgray')
+    .call(xGridLines)
+    .call(g => g.select(".domain").remove());
+
+
+
+
 
   return {
     svg,
