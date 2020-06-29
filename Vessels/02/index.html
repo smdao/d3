@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vessel</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="svg-helper.js"></script>
+
+  <style>
+    .comp {
+      cursor: pointer;
+    }
+
+    .grid line {
+      stroke: lightgray;
+      stroke-opacity: .7;
+      shape-rendering: crispEdges;
+    }
+  </style>
+
+</head>
+
+<body>
+
+  <div style="width: 100%; display: flex; justify-content: center;">
+    <div style="width: 800px; height: 800px;">
+      <div id="viz" style="width: 50%;">
+      </div>
+    </div>
+  </div>
+
+  <script>
+
+    const load = async (id, width, height) => {
+
+      const data = await d3.json("../data/vessels.json")
+
+      const lineFunc = d3.line()
+        .x(function (d) { return scaleX(d.x); })
+        .y(function (d) { return scaleY(d.y); });
+
+      const { svg, scaleX, scaleY } = svgHelper.init({
+        id: id,
+        width: width,
+        height: height,
+        margin: {
+          top: 30,
+          right: 30,
+          bottom: 30,
+          left: 30
+        }
+      });
+
+      const comp = svg.selectAll('.comp')
+        .data(data)
+        .enter()
+        .append('g')
+        .attr('class', 'comp');
+
+      comp.append('path')
+        .attr('class', 'comp')
+        .attr("d", item => {
+          const data = item.Data;
+          return lineFunc(data);
+        })
+        .attr('id', x => x.Id)
+        .attr("fill", x => x.Color)
+        .attr("stroke", x => x.Color)
+        .attr("stroke-width", 1);
+
+    }
+
+    load('viz', 800, 800);
+
+  </script>
+
+</body>
+
+</html>
