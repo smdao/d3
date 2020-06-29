@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <title>Vessel</title>
   <script src="https://d3js.org/d3.v5.min.js"></script>
-  <script src="svg-helper.js"></script>
+  <script src="js/svg-helper.js"></script>
 
   <style>
     .comp {
@@ -34,7 +34,7 @@
 
     const load = async (id, width, height) => {
 
-      const data = await d3.json("../data/vessels.json")
+      const data = await d3.json("data/vessels.json")
 
       const lineFunc = d3.line()
         .x(function (d) { return scaleX(d.x); })
