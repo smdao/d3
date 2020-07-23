@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Vessel</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+
+</head>
+
+<body>
+
+  <svg id="root" style="border: 2px solid green"></svg>
+
+  <script>
+
+    const areas = [{
+      uid: 'ajf9v0',
+      points: [{
+        x: 52,
+        y: 92
+      },
+      {
+        x: 50,
+        y: 151
+      },
+      {
+        x: 123,
+        y: 149
+      },
+      {
+        x: 125,
+        y: 91
+      }
+      ],
+      foo: 'bar',
+      // ...
+    },
+    {
+      uid: 'ufnf12',
+      points: [{
+        x: 350,
+        y: 250
+      },
+      {
+        x: 450,
+        y: 250
+      },
+      {
+        x: 450,
+        y: 275
+      },
+      {
+        x: 350,
+        y: 275
+      }
+      ],
+      foo: 'baz',
+      // ...
+    }
+    ];
+
+    const svg = d3.select('#root');
+
+    svg.attr('width', 500)
+      .attr('height', 500);
+
+    const areasGroup = svg.append('g')
+      .attr('class', 'areas');
+
+    function drawAreas(areas) {
+
+      console.log('Called draw');
+      const self = this;
+
+      const aGroup = areasGroup.selectAll('g.area')
+        .data(areas, (d) => {
+          console.log('Areas', d.points.map((d) => [d.x, d.y].join('#')).join('#'));
+          return d.points.map((d) => [d.x, d.y].join('#')).join('#');
+        });
+
+      // areasGroup.exit().remove();
+
+      const areaGroups = aGroup.enter()
+        .append('g')
+        .merge(aGroup)
+        .attr('class', 'area');
+
+      //const areaPolygon = area.append('g')
+      //    .attr('class', 'polygon');
+
+      //const areaPoints = area.append('g')
+      //    .attr('class', 'points');
+
+      const polygon = areaGroups.selectAll('polygon')
+        .data((d) => {
+          // console.log('Polygon data points', [d.points]);
+          return [d.points];
+        }, (d) => {
+          // console.log('Polygon key', d.map((d) => [d.x, d.y].join('#')).join('#'));
+          return d.map((d) => [d.x, d.y].join('#')).join('#');
+        });
+
+      polygon.enter()
+        .append('polygon')
+        .merge(polygon)
+        .attr('points', (d) => {
+          // console.log('Polygon points', d);
+          return d.map((d) => [d.x, d.y].join(',')).join(' ');
+        })
+        .attr('stroke', '#007bff')
+        .attr('stroke-width', 1)
+        .attr('fill', '#007bff')
+        .attr('fill-opacity', 0.25);
+        // .on('click', this.handlePolygonSelection)
+
+      polygon.exit().remove();
+
+      // const circles = areaGroups.selectAll('circle')
+      //   .data((d) => d.points, (d) => d.x + '#' + d.y);
+
+      // circles.enter()
+      //   .append('circle')
+      //   .attr('r', 4)
+      //   .attr('cx', (d) => d.x)
+      //   .attr('cy', (d) => d.y)
+      //   .attr('fill', '#007bff')
+      //   .on('click', (d, idx, j) => {
+
+      //     const parentArea = d3.select(j[idx].parentNode).datum().points;
+      //     const i = parentArea.findIndex((p) => p.x === d.x && p.y === d.y);
+
+      //     if (i === parentArea.length) {
+      //       parentArea.pop();
+      //     } else if (i === 0) {
+      //       parentArea.shift();
+      //     } else {
+      //       parentArea.splice(i, 1);
+      //     }
+
+      //     this.drawAreas(areas);
+      //   })
+      //   .call(d3.drag()
+      //     .on('start', function (d) {
+      //       d3.select(this).classed('active', true)
+      //     })
+      //     .on('drag', function (d) {
+      //       d3.select(this)
+      //         .attr('cx', d.x = d3.event.x)
+      //         .attr('cy', d.y = d3.event.y);
+      //       self.drawAreas(areas);
+      //     })
+      //     .on('end', function (d) {
+      //       d3.select(this).classed('active', false)
+      //     }));
+
+      // circles.exit().remove();
+
+    }
+
+    this.drawAreas(areas);
+
+  </script>
+</body>
+
+</html>
